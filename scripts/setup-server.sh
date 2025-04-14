@@ -60,8 +60,9 @@ print_step "Unmasking and restarting SSH service..."
 systemctl unmask ssh >/dev/null 2>&1
 systemctl unmask ssh.socket >/dev/null 2>&1
 systemctl enable ssh >/dev/null 2>&1
-systemctl start ssh >/dev/null 2>&1
-systemctl restart ssh.service && print_success "SSH service restarted" || print_error "Failed to restart SSH"
+systemctl restart ssh ssh.socket 2>&1
+systemctl restart ssh.socket 2>&1
+systemctl restart ssh && print_success "SSH service restarted" || print_error "Failed to restart SSH"
 
 ### STEP 3: Change root password ###
 print_step "Changing root password..."
