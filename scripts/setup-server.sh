@@ -83,6 +83,8 @@ print_step "Checking Tailscale installation..."
 if ! command -v tailscale &>/dev/null; then
     print_step "Tailscale not found. Installing..."
     curl -fsSL https://tailscale.com/install.sh >/dev/null 2>&1 | sh && print_success "Tailscale installed"
+    systemctl start tailscaled >/dev/null 2>&1
+    
 else
     print_success "Tailscale is already installed"
 fi
