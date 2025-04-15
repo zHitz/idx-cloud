@@ -89,15 +89,22 @@ print_step "Checking Tailscale installation..."
 
 if ! command -v tailscale &>/dev/null; then
     print_step "Tailscale not found. Installing..."
-    curl -fsSL https://tailscale.com/install.sh >/dev/null 2>&1 | sh && print_success "Tailscale installed"
-    systemctl start tailscaled >/dev/null 2>&1
-    
+    curl -fsSL https://tailscale.com/install.sh | sh >/dev/null 2>&1 && print_success "Tailscale installed"
 else
     print_success "Tailscale is already installed"
 fi
 
 print_step "Enabling and starting tailscaled service..."
-systemctl enable --now tailscaled && print_success "tailscaled service enabled" || print_error "Failed to enable tailscaled"
+systemctl enable tailscaled >/dev/null 2>&1
+systemctl start tailscaled >/dev/null 2>&1
+
+# Kiểm tra lại status
+if systemctl is-active --quiet tailscaled; then
+    print_success "tailscaled service is running"
+else
+    print_error "tailscaled service failed to start"
+    exit 1
+fi
 
 print_step "Bringing up Tailscale (you may need to authenticate)..."
 tailscale up
