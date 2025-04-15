@@ -57,12 +57,18 @@ print_success "SSH configuration updated"
 ### STEP 2: Unmask & Restart SSH ###
 print_step "Unmasking and restarting SSH service..."
 
+# Unmask và enable SSH service
 systemctl unmask ssh >/dev/null 2>&1
 systemctl unmask ssh.socket >/dev/null 2>&1
 systemctl enable ssh >/dev/null 2>&1
-systemctl restart ssh ssh.socket 2>&1
-systemctl restart ssh.socket 2>&1
-systemctl restart ssh && print_success "SSH service restarted" || print_error "Failed to restart SSH"
+systemctl enable ssh.socket >/dev/null 2>&1
+
+# Khởi động lại dịch vụ SSH
+if systemctl restart ssh >/dev/null 2>&1 && systemctl restart ssh.socket >/dev/null 2>&1; then
+    print_success "SSH service and socket restarted successfully"
+else
+    print_error "Failed to restart SSH service or socket. Check systemctl status for more details."
+fi
 
 ### STEP 3: Change root password ###
 print_step "Changing root password..."
