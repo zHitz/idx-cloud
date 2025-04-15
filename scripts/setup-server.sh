@@ -38,19 +38,19 @@ print_step "Configuring SSH to allow root login and password authentication..."
 SSHD_CONFIG="/etc/ssh/sshd_config"
 
 # Backup existing SSH config
-cp $SSHD_CONFIG ${SSHD_CONFIG}.bak
+cp "$SSHD_CONFIG" "${SSHD_CONFIG}.bak"
 
-# Update settings
-sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' $SSHD_CONFIG
-sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' $SSHD_CONFIG
-sed -i 's/^#\?UsePAM.*/UsePAM no/' $SSHD_CONFIG
-sed -i 's/^#\?Port.*/Port 9022/' $SSHD_CONFIG
+# Update settings if they exist
+sed -i '/^#\?PermitRootLogin\b/s/.*/PermitRootLogin yes/' "$SSHD_CONFIG"
+sed -i '/^#\?PasswordAuthentication\b/s/.*/PasswordAuthentication yes/' "$SSHD_CONFIG"
+sed -i '/^#\?UsePAM\b/s/.*/UsePAM no/' "$SSHD_CONFIG"
+sed -i '/^#\?Port\b/s/.*/Port 9022/' "$SSHD_CONFIG"
 
 # Add settings if missing
-grep -q "^PermitRootLogin" $SSHD_CONFIG || echo "PermitRootLogin yes" >> $SSHD_CONFIG
-grep -q "^PasswordAuthentication" $SSHD_CONFIG || echo "PasswordAuthentication yes" >> $SSHD_CONFIG
-grep -q "^UsePAM" $SSHD_CONFIG || echo "UsePAM no" >> $SSHD_CONFIG
-grep -q "^Port" $SSHD_CONFIG || echo "Port 9022" >> $SSHD_CONFIG
+grep -q "^PermitRootLogin" "$SSHD_CONFIG" || echo "PermitRootLogin yes" >> "$SSHD_CONFIG"
+grep -q "^PasswordAuthentication" "$SSHD_CONFIG" || echo "PasswordAuthentication yes" >> "$SSHD_CONFIG"
+grep -q "^UsePAM" "$SSHD_CONFIG" || echo "UsePAM no" >> "$SSHD_CONFIG"
+grep -q "^Port" "$SSHD_CONFIG" || echo "Port 9022" >> "$SSHD_CONFIG"
 
 print_success "SSH configuration updated"
 
